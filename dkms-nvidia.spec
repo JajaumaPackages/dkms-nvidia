@@ -437,13 +437,21 @@ rm -rf %{name}-%{version}
 %{_nvidia_docdir}/%{name}-%{version}/
 
 
-%post
-dkms add -m nvidia -v %{version} --rpm_safe_upgrade
-dkms build -m nvidia -v %{version}
-dkms install --force -m nvidia -v %{version}
+%pre
+# workaround upgrade from failing 349.16 for now
+# TODO: remove this later
+if [ $1 -gt 1 ]; then
+    dkms remove --quiet --module nvidia -v 349.16 --all --rpm_safe_upgrade || :
+fi
 
 %preun
-dkms remove -m nvidia -v %{version} --all --rpm_safe_upgrade
+dkms remove --quiet --module nvidia -v %{version} --all --rpm_safe_upgrade || :
+
+%posttrans
+dkms add --quiet --module nvidia -v %{version} --rpm_safe_upgrade
+dkms build --quiet --module nvidia -v %{version}
+dkms install --quiet --force --module nvidia -v %{version}
+exit 0
 
 %post -n nvidia-driver-nvml -p /sbin/ldconfig
 %postun -n nvidia-driver-nvml -p /sbin/ldconfig
