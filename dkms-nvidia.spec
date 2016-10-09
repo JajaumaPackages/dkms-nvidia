@@ -125,6 +125,9 @@ system.
 
 %package        -n nvidia-driver-xorg
 Summary:        NVIDIA OpenGL X11 display driver files
+Requires:       glvnd-libGLES%{?_isa}
+Requires:       glvnd-libGLX%{?_isa}
+Requires:       glvnd-libEGL%{?_isa}
 Requires:       xorg-x11-server-Xorg
 Requires:       nvidia-common
 
