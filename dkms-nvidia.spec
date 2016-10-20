@@ -16,7 +16,7 @@
 %global __provides_exclude ^(%{privlibs})\\.so
 
 Name:           dkms-nvidia
-Version:        367.44
+Version:        367.57
 Release:        1%{?dist}
 Summary:        NVIDIA display driver kernel module
 
@@ -483,5 +483,8 @@ exit 0
 
 
 %changelog
+* Thu Oct 20 2016 Jajauma's Packages <jajauma@yandex.ru> - 367.57-1
+- Update to latest upstream version
+
 * Fri Oct 07 2016 Jajauma's Packages <jajauma@yandex.ru> - 367.44-1
 - Public release
