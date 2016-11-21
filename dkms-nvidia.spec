@@ -16,7 +16,7 @@
 %global __provides_exclude ^(%{privlibs})\\.so
 
 Name:           dkms-nvidia
-Version:        367.57
+Version:        375.20
 Release:        1%{?dist}
 Summary:        NVIDIA display driver kernel module
 
@@ -175,6 +175,7 @@ install -d %{buildroot}%{_nvidia_docdir}/%{name}-%{version}/
 install -d %{buildroot}%{_nvidia_mandir}/man1/
 install -d %{buildroot}%{_nvidia_libdir}/xorg/modules/drivers/
 install -d %{buildroot}%{_nvidia_libdir}/xorg/modules/extensions/
+install -d %{buildroot}%{_datadir}/glvnd/egl_vendor.d/
 # path seems to be hardcoded
 install -d %{buildroot}%{_datadir}/nvidia/
 
@@ -315,6 +316,9 @@ rm -f %{buildroot}/_/libnvidia-glsi.so.%{version}
 rm -f %{buildroot}/_/libnvidia-glcore.so.%{version}
 rm -f %{buildroot}/_/tls/libnvidia-tls.so.%{version}
 
+install -p -m644 10_nvidia.json %{buildroot}%{_datadir}/glvnd/egl_vendor.d/
+rm -f %{buildroot}/_/10_nvidia.json
+
 ln -s libGLESv1_CM_nvidia.so.%{version} %{buildroot}%{_nvidia_libdir}/libGLESv1_CM_nvidia.so.1
 ln -s libGLESv2_nvidia.so.%{version}    %{buildroot}%{_nvidia_libdir}/libGLESv2_nvidia.so.2
 ln -s libGLX_nvidia.so.%{version}       %{buildroot}%{_nvidia_libdir}/libGLX_nvidia.so.0
@@ -350,6 +354,7 @@ rm -f %{buildroot}/_/libOpenGL.so.0
 rm -f %{buildroot}/_/libGLESv1_CM.so.1
 rm -f %{buildroot}/_/libGLESv2.so.2
 rm -f %{buildroot}/_/libGL.so.%{version}
+rm -f %{buildroot}/_/libEGL.so.%{version}
 rm -rf %{buildroot}/_/libglvnd_install_checker/
 # provided by nvidia-settings
 rm -f %{buildroot}/_/libnvidia-gtk2.so.%{version}
@@ -436,6 +441,7 @@ rm -rf %{name}-%{version}
 %dir %{_datadir}/nvidia/
 %{_datadir}/nvidia/nvidia-application-profiles-%{version}-rc
 %{_datadir}/nvidia/nvidia-application-profiles-%{version}-key-documentation
+%{_datadir}/glvnd/egl_vendor.d/10_nvidia.json
 
 %files -n nvidia-driver-doc
 %{_nvidia_docdir}/%{name}-%{version}/
@@ -483,8 +489,11 @@ exit 0
 
 
 %changelog
+* Mon Nov 21 2016 Jajauma's Packages <jajauma@yandex.ru> - 375.20-1
+- Update to latest upstream release
+
 * Thu Oct 20 2016 Jajauma's Packages <jajauma@yandex.ru> - 367.57-1
-- Update to latest upstream version
+- Update to latest upstream release
 
 * Fri Oct 07 2016 Jajauma's Packages <jajauma@yandex.ru> - 367.44-1
 - Public release
