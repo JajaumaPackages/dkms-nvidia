@@ -17,7 +17,7 @@
 
 Name:           dkms-nvidia
 Version:        375.20
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        NVIDIA display driver kernel module
 
 License:        NVIDIA License
@@ -195,6 +195,7 @@ sed -e 's;__VERSION_STRING;%{version};' \
 'BUILT_MODULE_NAME[3]=nvidia-drm\n'\
 'DEST_MODULE_LOCATION[3]="/kernel/drivers/video";' \
     -i kernel/dkms.conf
+echo 'REMAKE_INITRD="yes"' >> kernel/dkms.conf
 cp -rf kernel/* %{buildroot}%{_usrsrc}/nvidia-%{version}/
 rm -rf %{buildroot}/_/kernel/
 
@@ -447,13 +448,6 @@ rm -rf %{name}-%{version}
 %{_nvidia_docdir}/%{name}-%{version}/
 
 
-%pre
-# workaround upgrade from failing 349.16 for now
-# TODO: remove this later
-if [ $1 -gt 1 ]; then
-    dkms remove --quiet --module nvidia -v 349.16 --all --rpm_safe_upgrade || :
-fi
-
 %preun
 dkms remove --quiet --module nvidia -v %{version} --all --rpm_safe_upgrade || :
 
@@ -489,6 +483,10 @@ exit 0
 
 
 %changelog
+* Tue Nov 22 2016 Jajauma's Packages <jajauma@yandex.ru> - 375.20-2
+- Force remake initrd
+- Drop workaround for 349.16
+
 * Mon Nov 21 2016 Jajauma's Packages <jajauma@yandex.ru> - 375.20-1
 - Update to latest upstream release
 
