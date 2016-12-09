@@ -22,12 +22,8 @@ Summary:        NVIDIA display driver kernel module
 
 License:        NVIDIA License
 URL:            http://www.nvidia.com/object/unix.html
-%ifarch x86_64
-Source0:        ftp://download.nvidia.com/XFree86/Linux-x86_64/%{version}/NVIDIA-Linux-x86_64-%{version}-no-compat32.run
-%endif
-%ifarch %{ix86}
-Source0:        ftp://download.nvidia.com/XFree86/Linux-x86/%{version}/NVIDIA-Linux-x86-%{version}.run
-%endif
+Source20:       ftp://download.nvidia.com/XFree86/Linux-x86_64/%{version}/NVIDIA-Linux-x86_64-%{version}-no-compat32.run
+Source21:       ftp://download.nvidia.com/XFree86/Linux-x86/%{version}/NVIDIA-Linux-x86-%{version}.run
 Source1:        blacklist-nouveau.conf
 Source2:        10-nvidia-xorg-modules.conf
 
@@ -186,8 +182,14 @@ Documentation files.
 
 
 %prep
-chmod +x %{SOURCE0}
-sh %{SOURCE0} --extract-only --target %{name}-%{version}
+%ifarch x86_64
+chmod +x %{SOURCE20}
+sh %{SOURCE20} --extract-only --target %{name}-%{version}
+%endif
+%ifarch %{ix86}
+chmod +x %{SOURCE21}
+sh %{SOURCE21} --extract-only --target %{name}-%{version}
+%endif
 
 
 %build
