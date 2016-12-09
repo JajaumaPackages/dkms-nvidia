@@ -17,16 +17,21 @@
 
 Name:           dkms-nvidia
 Version:        375.20
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        NVIDIA display driver kernel module
 
 License:        NVIDIA License
 URL:            http://www.nvidia.com/object/unix.html
+%ifarch x86_64
 Source0:        ftp://download.nvidia.com/XFree86/Linux-x86_64/%{version}/NVIDIA-Linux-x86_64-%{version}-no-compat32.run
+%endif
+%ifarch %{ix86}
+Source0:        ftp://download.nvidia.com/XFree86/Linux-x86/%{version}/NVIDIA-Linux-x86-%{version}.run
+%endif
 Source1:        blacklist-nouveau.conf
 Source2:        10-nvidia-xorg-modules.conf
 
-ExclusiveArch:  x86_64
+ExclusiveArch:  %{ix86} x86_64
 BuildRequires:  nvidia-common
 Requires:       dkms
 Requires:       nvidia-modprobe
@@ -131,11 +136,44 @@ Requires:       glvnd-libGLX%{?_isa}
 Requires:       glvnd-libEGL%{?_isa}
 Requires:       xorg-x11-server-Xorg
 Requires:       nvidia-common
+Requires:       nvidia-driver-profiles
 
 %description    -n nvidia-driver-xorg
 This package contains an X driver, which is needed by the X server to use your
 NVIDIA hardware along with GLX extension and hardware-accelerated OpenGL
 implementation libraries.
+
+%ifarch x86_64
+%package        -n nvidia-driver-profiles
+Summary:        Predefined application profile keys and documentation
+BuildArch:      noarch
+
+%description    -n nvidia-driver-profiles
+The NVIDIA Linux driver supports configuring various driver settings on a
+per-process basis through the use of "application profiles": collections of
+settings that are only applied if the current process matches attributes
+detected by the driver when it is loaded into the process. This mechanism
+allows users to selectively override global driver settings for a particular
+application without the need to set environment variables on the command line
+prior to running the application.
+
+Application profiles consist of "rules" and "profiles". A "profile" defines
+what settings to use, and a "rule" identifies an application and defines what
+profile should be used with that application.
+
+A rule identifies an application by describing various features of the
+application; for example, the name of the application binary (e.g. "glxgears")
+or a shared library loaded into the application (e.g. "libpthread.so.0"). The
+particular features supported by this NVIDIA Linux implementation are listed
+below in the "Supported Features" section.
+
+Currently, application profiles are only supported by the NVIDIA Linux GLX
+implementation, but other NVIDIA driver components may use them in the future.
+
+Application profiles can be configured using the nvidia-settings control
+panel. To learn more, consult the online help text by clicking the "Help"
+button under the "Application Profiles" page in nvidia-settings.
+%endif
 
 
 %package        -n nvidia-driver-doc
@@ -170,7 +208,6 @@ install -d %{buildroot}%{_sysconfdir}/X11/xorg.conf.d/
 install -d %{buildroot}%{_datadir}/nvidia/
 install -d %{buildroot}%{_nvidia_bindir}/
 install -d %{buildroot}%{_nvidia_libdir}/
-install -d %{buildroot}%{_nvidia_lib32dir}/
 install -d %{buildroot}%{_nvidia_docdir}/%{name}-%{version}/
 install -d %{buildroot}%{_nvidia_mandir}/man1/
 install -d %{buildroot}%{_nvidia_libdir}/xorg/modules/drivers/
@@ -325,8 +362,10 @@ ln -s libGLESv2_nvidia.so.%{version}    %{buildroot}%{_nvidia_libdir}/libGLESv2_
 ln -s libGLX_nvidia.so.%{version}       %{buildroot}%{_nvidia_libdir}/libGLX_nvidia.so.0
 ln -s libEGL_nvidia.so.%{version}       %{buildroot}%{_nvidia_libdir}/libEGL_nvidia.so.0
 
+%ifarch x86_64
 install -p -m644 nvidia-application-profiles-%{version}-key-documentation %{buildroot}%{_datadir}/nvidia/
 install -p -m644 nvidia-application-profiles-%{version}-rc %{buildroot}%{_datadir}/nvidia/
+%endif
 
 rm -f %{buildroot}/_/nvidia-application-profiles-%{version}-rc
 rm -f %{buildroot}/_/nvidia-application-profiles-%{version}-key-documentation
@@ -439,10 +478,14 @@ rm -rf %{name}-%{version}
 %{_nvidia_libdir}/libnvidia-glsi.so.%{version}
 %{_nvidia_libdir}/libnvidia-glcore.so.%{version}
 %{_nvidia_libdir}/libnvidia-tls.so.%{version}
+%{_datadir}/glvnd/egl_vendor.d/10_nvidia.json
+
+%ifarch x86_64
+%files -n nvidia-driver-profiles
 %dir %{_datadir}/nvidia/
 %{_datadir}/nvidia/nvidia-application-profiles-%{version}-rc
 %{_datadir}/nvidia/nvidia-application-profiles-%{version}-key-documentation
-%{_datadir}/glvnd/egl_vendor.d/10_nvidia.json
+%endif
 
 %files -n nvidia-driver-doc
 %{_nvidia_docdir}/%{name}-%{version}/
@@ -483,6 +526,9 @@ exit 0
 
 
 %changelog
+* Fri Dec 09 2016 Jajauma's Packages <jajauma@yandex.ru> - 375.20-3
+- Rebuilt for altarch
+
 * Tue Nov 22 2016 Jajauma's Packages <jajauma@yandex.ru> - 375.20-2
 - Force remake initrd
 - Drop workaround for 349.16
