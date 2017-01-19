@@ -16,8 +16,8 @@
 %global __provides_exclude ^(%{privlibs})\\.so
 
 Name:           dkms-nvidia
-Version:        375.20
-Release:        3%{?dist}
+Version:        375.26
+Release:        1%{?dist}
 Summary:        NVIDIA display driver kernel module
 
 License:        NVIDIA License
@@ -528,6 +528,9 @@ exit 0
 
 
 %changelog
+* Fri Jan 20 2017 Jajauma's Packages <jajauma@yandex.ru> - 375.26-1
+- Update to latest upstream release
+
 * Fri Dec 09 2016 Jajauma's Packages <jajauma@yandex.ru> - 375.20-3
 - Rebuilt for altarch
 
