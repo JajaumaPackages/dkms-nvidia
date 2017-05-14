@@ -16,14 +16,14 @@
 %global __provides_exclude ^(%{privlibs})\\.so
 
 Name:           dkms-nvidia
-Version:        375.39
+Version:        381.22
 Release:        1%{?dist}
 Summary:        NVIDIA display driver kernel module
 
 License:        NVIDIA License
 URL:            http://www.nvidia.com/object/unix.html
-Source20:       ftp://download.nvidia.com/XFree86/Linux-x86_64/%{version}/NVIDIA-Linux-x86_64-%{version}-no-compat32.run
-Source21:       ftp://download.nvidia.com/XFree86/Linux-x86/%{version}/NVIDIA-Linux-x86-%{version}.run
+Source20:       http://download.nvidia.com/XFree86/Linux-x86_64/%{version}/NVIDIA-Linux-x86_64-%{version}-no-compat32.run
+Source21:       http://download.nvidia.com/XFree86/Linux-x86/%{version}/NVIDIA-Linux-x86-%{version}.run
 Source1:        blacklist-nouveau.conf
 Source2:        10-nvidia-xorg-modules.conf
 
@@ -414,7 +414,8 @@ rm -f %{buildroot}/_/tls_test{,_dso.so}
 # didn't figured out how to use that
 rm -f %{buildroot}/_/libnvidia-wfb.so.%{version}
 # no wayland ATM
-rm -f %{buildroot}/_/libnvidia-egl-wayland.so.%{version}
+rm -f %{buildroot}/_/libnvidia-egl-wayland.so.1.0.1
+rm -f %{buildroot}/_/10_nvidia_wayland.json
 # no vulkan ATM
 rm -f %{buildroot}/_/nvidia_icd.json
 # installer
@@ -528,6 +529,11 @@ exit 0
 
 
 %changelog
+* Sat May 13 2017 Jajauma's Packages <jajauma@yandex.ru> - 381.22-1
+- Update to latest upstream release
+- Fix broken FTP D/L links
+- Skip wayland client library installation
+
 * Thu Feb 16 2017 Jajauma's Packages <jajauma@yandex.ru> - 375.39-1
 - Update to latest upstream release
 
