@@ -16,7 +16,7 @@
 %global __provides_exclude ^(%{privlibs})\\.so
 
 Name:           dkms-nvidia
-Version:        381.22
+Version:        384.90
 Release:        1%{?dist}
 Summary:        NVIDIA display driver kernel module
 
@@ -418,6 +418,7 @@ rm -f %{buildroot}/_/libnvidia-egl-wayland.so.1.0.1
 rm -f %{buildroot}/_/10_nvidia_wayland.json
 # no vulkan ATM
 rm -f %{buildroot}/_/nvidia_icd.json
+rm -f %{buildroot}/_/nvidia_icd.json.template
 # installer
 rm -f %{buildroot}/_/nvidia-installer{,.1.gz}
 rm -f %{buildroot}/_/makeself-help-script.sh
@@ -529,6 +530,10 @@ exit 0
 
 
 %changelog
+* Mon Oct 23 2017 Jajauma's Packages <jajauma@yandex.ru> - 384.90-1
+- Update to latest upstream release
+- Skip Vulkan ICD installation
+
 * Sat May 13 2017 Jajauma's Packages <jajauma@yandex.ru> - 381.22-1
 - Update to latest upstream release
 - Fix broken FTP D/L links
